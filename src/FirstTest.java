@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
 
+import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
@@ -118,6 +119,22 @@ public class FirstTest {
                 article_title);
     }
 
+    @Test
+    public void testCheckExpectedText(){
+        waitForElementPresent(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find 'Search Wikipedia' input",
+                5);
+
+        assertElementHasText(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Search Wikipedia",
+                "Text is incorrect",
+                5);
+    }
+
+
+
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds){
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(error_message + "\n");
@@ -149,6 +166,12 @@ public class FirstTest {
         WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
         element.clear();
         return element;
+    }
+
+    private void assertElementHasText(By by, String expected_text, String error_message, long timeoutInSeconds){
+        WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+        wait.withMessage("Элемент не найден\n");
+        assertEquals(error_message, expected_text, wait.until(presenceOfElementLocated(by)).getText());
     }
 
 }
