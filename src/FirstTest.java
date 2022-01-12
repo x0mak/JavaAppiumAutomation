@@ -10,10 +10,10 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfElementLocated;
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.junit.Assert.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class FirstTest {
 
@@ -133,13 +133,36 @@ public class FirstTest {
                 5);
     }
 
+    @Test
+    public void testCancelSearchAndCheckList(){
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' input",
+                5);
 
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                "Harry Potter",
+                "Cannot find search input",
+                5);
+
+        assertNotNull("Список пустой", getElements(By.id("org.wikipedia:id/page_list_item_container")));
+
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_close_btn"),
+                "Cannot find 'х' to cancel search",
+                5);
+
+        assertNull("Список не пустой", getElements(By.id("org.wikipedia:id/page_list_item_container")));
+
+    }
 
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds){
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(error_message + "\n");
         return wait.until(presenceOfElementLocated(by));
     }
+
     private WebElement waitForElementPresent(By by, String error_message){
         return waitForElementPresent(by, error_message, 5);
     }
@@ -172,6 +195,10 @@ public class FirstTest {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage("Элемент не найден\n");
         assertEquals(error_message, expected_text, wait.until(presenceOfElementLocated(by)).getText());
+    }
+
+    private List<WebElement> getElements(By by){
+        return presenceOfAllElementsLocatedBy(by).apply(driver);
     }
 
 }
