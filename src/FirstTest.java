@@ -157,6 +157,26 @@ public class FirstTest {
 
     }
 
+    @Test
+    public void testCheckTextInSearchResults(){
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia' input",
+                5);
+
+        String searchCriteria = "Harry Potter";
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                searchCriteria,
+                "Cannot find search input",
+                5);
+
+        List<WebElement> searchResultTitles = getElements(By.id("org.wikipedia:id/page_list_item_title"));
+        assertNotNull("Список пустой", searchResultTitles);
+
+        searchResultTitles.forEach(title -> assertTrue(title.getText().toLowerCase().contains(searchCriteria.toLowerCase())));
+    }
+
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds){
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.withMessage(error_message + "\n");
