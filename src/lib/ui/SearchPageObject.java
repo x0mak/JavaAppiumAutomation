@@ -2,6 +2,9 @@ package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 public class SearchPageObject extends MainPageObject{
     private static final String
@@ -10,7 +13,9 @@ public class SearchPageObject extends MainPageObject{
             SEARCH_CANCEL_BUTTON = "org.wikipedia:id/search_close_btn",
             SEARCH_RESULT_BY_SUBSTRING_TPL= "//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='{SUBSTRING}']",
             SEARCH_RESULT_ELEMENT = "//*[@resource-id='org.wikipedia:id/search_results_list']/*[@resource-id='org.wikipedia:id/page_list_item_container']",
-            SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results found']";
+            SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results found']",
+            SEARCH_LIST_RESULT = "org.wikipedia:id/page_list_item_container",
+            SEARCH_RESULT_TITLE = "org.wikipedia:id/page_list_item_title";
 
     public SearchPageObject(AppiumDriver driver){
         super(driver);
@@ -69,5 +74,21 @@ public class SearchPageObject extends MainPageObject{
         this.assertElementNotPresent(
                 By.xpath(SEARCH_RESULT_ELEMENT),
                 "We supposed not to find any results");
+    }
+
+    public void assertElementHasText(String text) {
+        this.assertElementHasText(
+                By.xpath(SEARCH_INIT_ELEMENT),
+                text,
+                "Text is incorrect",
+                5);
+    }
+
+    public List<WebElement> getCheckList() {
+        return this.getElements(By.id(SEARCH_LIST_RESULT));
+    }
+
+    public List<WebElement> searchResultTitles() {
+        return this.getElements(By.id(SEARCH_RESULT_TITLE));
     }
 }

@@ -26,7 +26,7 @@ public class ArticlePageObject extends MainPageObject{
 
     public String getArticleTitle(){
         WebElement title_element = waitForTitleElement();
-        return title_element.getAttribute("text");
+        return title_element.getText();
     }
 
     public void swipeToFooter(){
@@ -35,15 +35,7 @@ public class ArticlePageObject extends MainPageObject{
 
     public void addArticleToMyList(String name_of_folder) {
 
-        this.waitForElementAndClick(
-                By.xpath(OPTIONS_BUTTON),
-                "Cannot find button to open article options",
-                5);
-
-        this.waitForElementAndClick(
-                By.xpath(OPTIONS_ADD_TO_NY_LIST_BUTTON),
-                "Cannot find options to add article to reading list",
-                5);
+        clickOptionsButtonAndAddToMyList();
 
         this.waitForElementAndClick(
                 By.id(ADD_TO_MY_LIST_OVERLAY),
@@ -72,6 +64,52 @@ public class ArticlePageObject extends MainPageObject{
         this.waitForElementAndClick(
                 By.xpath(CLOSE_ARTICLE_BUTTON),
                 "Cannot close article, cannot find x link",
+                5);
+    }
+
+    public void addArticleToExistingList() {
+        clickOptionsButtonAndAddToMyList();
+
+        this.waitForElementAndClick(
+                By.id("org.wikipedia:id/item_title"),
+                "Cannot find list for saving",
+                5);
+
+        this.waitForElementAndClick(
+                By.xpath("//android.widget.ImageButton[@content-desc='Navigate up']"),
+                "Cannot close article, cannot find x link",
+                5);
+
+    }
+
+        public void goToTheList (String name_of_folder){
+            this.waitForElementAndClick(
+                By.xpath("//android.widget.FrameLayout[@content-desc='My lists']"),
+                "Cannot find navigation button to My List",
+                5);
+
+        this.waitForElementAndClick(
+                By.xpath("//*[@text= '"+ name_of_folder + "']"),
+                "Cannot find created folder",
+                5);
+    }
+
+    public void assertTitlePresent () {
+        this.assertElementPresent(
+                By.id(TITLE),
+                "Cannot find title");
+
+    }
+
+    private void clickOptionsButtonAndAddToMyList() {
+        this.waitForElementAndClick(
+                By.xpath(OPTIONS_BUTTON),
+                "Cannot find button to open article options",
+                5);
+
+        this.waitForElementAndClick(
+                By.xpath(OPTIONS_ADD_TO_NY_LIST_BUTTON),
+                "Cannot find options to add article to reading list",
                 5);
     }
 }

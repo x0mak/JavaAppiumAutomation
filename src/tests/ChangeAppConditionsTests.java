@@ -1,6 +1,5 @@
 package tests;
 
-import com.sun.corba.se.spi.protocol.CorbaClientDelegate;
 import lib.CoreTestCase;
 import lib.ui.ArticlePageObject;
 import lib.ui.MainPageObject;

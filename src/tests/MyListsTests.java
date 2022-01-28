@@ -36,4 +36,33 @@ public class MyListsTests extends CoreTestCase {
         MyListsPageObject.openFolderByName(name_of_folder);
         MyListsPageObject.swipeByArticleToDelete(article_title);
     }
+
+    @Test
+    public void testSaveTwoArticleAndDeleteOne(){
+
+        SearchPageObject SearchPageObject= new SearchPageObject(driver);
+
+        SearchPageObject.initSearchInput();
+        SearchPageObject.typeSearchLine("Java");
+        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        ArticlePageObject.waitForTitleElement();
+        String article_title = ArticlePageObject.getArticleTitle();
+
+        String name_of_folder = "Favorite list";
+        ArticlePageObject.addArticleToMyList(name_of_folder);
+        ArticlePageObject.closeArticle();
+
+        SearchPageObject.initSearchInput();
+        SearchPageObject.typeSearchLine("Linkin Park discography");
+        SearchPageObject.clickByArticleWithSubstring("Linkin Park discography");
+        ArticlePageObject.waitForTitleElement();
+
+        ArticlePageObject.addArticleToExistingList();
+        ArticlePageObject.goToTheList(name_of_folder);
+
+        MyListsPageObject MyListsPageObject = new MyListsPageObject(driver);
+        MyListsPageObject.swipeByArticleToDelete(article_title);
+        MyListsPageObject.waitForArticleToAppearByTitle("Linkin Park discography");
+    }
 }

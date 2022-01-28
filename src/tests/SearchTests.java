@@ -4,7 +4,6 @@ import lib.CoreTestCase;
 import lib.ui.MainPageObject;
 import lib.ui.SearchPageObject;
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
@@ -68,59 +67,39 @@ public class SearchTests extends CoreTestCase {
 
     @Test
     public void testCheckExpectedText(){
-        MainPageObject.waitForElementPresent(
-                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
-                "Cannot find 'Search Wikipedia' input",
-                5);
 
-        MainPageObject.assertElementHasText(
-                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
-                "Search Wikipedia",
-                "Text is incorrect",
-                5);
+        SearchPageObject SearchPageObject= new SearchPageObject(driver);
+
+        SearchPageObject.initSearchInput();
+        SearchPageObject.assertElementHasText("Search Wikipedia");
     }
 
     @Test
     public void testCancelSearchAndCheckList(){
-        MainPageObject.waitForElementAndClick(
-                By.id("org.wikipedia:id/search_container"),
-                "Cannot find 'Search Wikipedia' input",
-                5);
 
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[contains(@text, 'Search…')]"),
-                "Harry Potter",
-                "Cannot find search input",
-                5);
+        SearchPageObject SearchPageObject= new SearchPageObject(driver);
 
-        assertNotNull("Список пустой", MainPageObject.getElements(By.id("org.wikipedia:id/page_list_item_container")));
+        SearchPageObject.initSearchInput();
+        SearchPageObject.typeSearchLine("Harry Potter");
 
-        MainPageObject.waitForElementAndClick(
-                By.id("org.wikipedia:id/search_close_btn"),
-                "Cannot find 'х' to cancel search",
-                5);
+        assertNotNull("Список пустой", SearchPageObject.getCheckList());
 
-        assertNull("Список не пустой", MainPageObject.getElements(By.id("org.wikipedia:id/page_list_item_container")));
+        SearchPageObject.clickCancelSearch();
+
+        assertNull("Список не пустой", SearchPageObject.getCheckList());
 
     }
 
     @Test
     public void testCheckTextInSearchResults(){
-        MainPageObject.waitForElementAndClick(
-                By.id("org.wikipedia:id/search_container"),
-                "Cannot find 'Search Wikipedia' input",
-                5);
 
+        SearchPageObject SearchPageObject= new SearchPageObject(driver);
+
+        SearchPageObject.initSearchInput();
         String searchCriteria = "Harry Potter";
-        MainPageObject.waitForElementAndSendKeys(
-                By.xpath("//*[contains(@text, 'Search…')]"),
-                searchCriteria,
-                "Cannot find search input",
-                5);
-
-        List<WebElement> searchResultTitles = MainPageObject.getElements(By.id("org.wikipedia:id/page_list_item_title"));
+        SearchPageObject.typeSearchLine(searchCriteria);
+        List<WebElement> searchResultTitles = SearchPageObject.searchResultTitles();
         assertNotNull("Список пустой", searchResultTitles);
-
         searchResultTitles.forEach(title -> assertTrue(title.getText().toLowerCase().contains(searchCriteria.toLowerCase())));
     }
 }
