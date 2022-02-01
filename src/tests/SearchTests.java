@@ -102,4 +102,13 @@ public class SearchTests extends CoreTestCase {
         assertNotNull("Список пустой", searchResultTitles);
         searchResultTitles.forEach(title -> assertTrue(title.getText().toLowerCase().contains(searchCriteria.toLowerCase())));
     }
+
+    @Test
+    public void testSearchResultByTitleAndDescription(){
+        SearchPageObject SearchPageObject= new SearchPageObject(driver);
+
+        SearchPageObject.initSearchInput();
+        SearchPageObject.typeSearchLine("Appium");
+        SearchPageObject.waitForElementByTitleAndDescription("Appium", "Automation for Apps");
+    }
 }

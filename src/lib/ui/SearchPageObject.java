@@ -15,7 +15,8 @@ public class SearchPageObject extends MainPageObject{
             SEARCH_RESULT_ELEMENT = "//*[@resource-id='org.wikipedia:id/search_results_list']/*[@resource-id='org.wikipedia:id/page_list_item_container']",
             SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results found']",
             SEARCH_LIST_RESULT = "org.wikipedia:id/page_list_item_container",
-            SEARCH_RESULT_TITLE = "org.wikipedia:id/page_list_item_title";
+            SEARCH_RESULT_TITLE = "org.wikipedia:id/page_list_item_title",
+            SEARCH_BY_TITLE_AND_DESCRIPTION_TPL = "//*[@resource-id='org.wikipedia:id/page_list_item_container']//.[@resource-id='org.wikipedia:id/page_list_item_title'][@text='%s']/..//.[@resource-id='org.wikipedia:id/page_list_item_description'][@text='%s']";
 
     public SearchPageObject(AppiumDriver driver){
         super(driver);
@@ -24,6 +25,10 @@ public class SearchPageObject extends MainPageObject{
     /* TEMPLATES METHODS*/
     public static String getResultSearchElement(String substring){
         return SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
+    }
+
+    public static String getResultSearchContainer(String title, String description){
+        return String.format(SEARCH_BY_TITLE_AND_DESCRIPTION_TPL, title, description);
     }
     /* TEMPLATES METHODS*/
 
@@ -90,5 +95,10 @@ public class SearchPageObject extends MainPageObject{
 
     public List<WebElement> searchResultTitles() {
         return this.getElements(By.id(SEARCH_RESULT_TITLE));
+    }
+
+    public void waitForElementByTitleAndDescription(String title, String description) {
+        String search_result_xpath = getResultSearchContainer(title, description);
+        this.waitForElementPresent(By.xpath(search_result_xpath), "Cannot find search result with " + title + " and " + description);
     }
 }
