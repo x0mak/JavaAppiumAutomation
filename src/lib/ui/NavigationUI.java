@@ -9,11 +9,11 @@ public class NavigationUI extends MainPageObject{
     }
 
     private static final String
-            MY_LISTS_LINK = "//android.widget.FrameLayout[@content-desc='My lists']";
+            MY_LISTS_LINK = "xpath://android.widget.FrameLayout[@content-desc='My lists']";
 
     public void clickMyLists(){
         this.waitForElementAndClick(
-                By.xpath(MY_LISTS_LINK),
+                MY_LISTS_LINK,
                 "Cannot find navigation button to My List",
                 5);
     }
