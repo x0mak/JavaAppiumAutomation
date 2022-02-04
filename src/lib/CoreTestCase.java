@@ -2,6 +2,7 @@ package lib;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 import junit.framework.TestCase;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -22,8 +23,7 @@ public class CoreTestCase extends TestCase {
 
         super.setUp();
 
-        DesiredCapabilities capabilities= this.getCapabilitiesByPlatformEnv();
-        driver = new AndroidDriver(new URL(AppiumURL), capabilities);
+        driver = initDriver();
         this.rotateScreenPortrait();
     }
 
@@ -46,6 +46,19 @@ public class CoreTestCase extends TestCase {
         driver.runAppInBackground(Duration.ofSeconds(seconds));
     }
 
+    private AppiumDriver initDriver() throws Exception {
+        String platform = System.getenv("PLATFORM");
+        URL url = new URL(AppiumURL);
+        switch (platform){
+            case PLATFORM_ANDROID:
+                return new AndroidDriver(url, getCapabilitiesByPlatformEnv());
+            case PLATFORM_IOS:
+                return new IOSDriver(url, getCapabilitiesByPlatformEnv());
+            default:
+                throw new RuntimeException("Неизсветный тип платформы, " + platform);
+        }
+    }
+
     private DesiredCapabilities getCapabilitiesByPlatformEnv() throws Exception
     {
         String platform = System.getenv("PLATFORM");
@@ -63,13 +76,11 @@ public class CoreTestCase extends TestCase {
             capabilities.setCapability("platformName", "iOS");
             capabilities.setCapability("deviceName", "iPhone SE");
             capabilities.setCapability("platformVersion", "11.3");
-            capabilities.setCapability("app", "/home/lena/Desktop/JavaAppiumAutomation/apks/org.wikipedia.apk");
+            capabilities.setCapability("app", "/home/lena/Desktop/JavaAppiumAutomation/apks/Wikipedia.app");
         } else {
             throw new Exception("Cannot get run platform from env variable. Platform value - " + platform);
         }
 
         return capabilities;
     }
-
-
 }
